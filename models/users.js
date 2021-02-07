@@ -22,7 +22,7 @@ const hospitalSchema = new Schema({
         type: String,
         default: ''
     },
-    governorate: {
+    city: {
         type: String,
         default: ''
     },
@@ -46,12 +46,12 @@ const hospitalSchema = new Schema({
         min: 0,
         default: 1
     },
-    totalAvaibleBeds:{
+    totalAvailableBeds:{
         type: Number,
         min: 0,
         default: 1
     },
-    coronaAvaibleBeds:{
+    coronaAvailableBeds:{
         type: Number,
         min: 0,
         default: 1

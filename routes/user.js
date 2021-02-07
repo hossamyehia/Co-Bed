@@ -47,13 +47,13 @@ usersRouter.post('/signup', (req, res, next) => {
         else {
           user.name = req.body.name;
           user.phoneNumber = req.body.phoneNumber;
-          user.governorate = req.body.governorate;
-          user.coordinates.latitude = req.body.latitude;
-          user.coordinates.longitude = req.body.longitude;
+          user.city = req.body.city;
+          user.coordinates.latitude = req.body.coordinates.latitude;
+          user.coordinates.longitude = req.body.coordinates.longitude;
           user.totalBeds = req.body.totalBeds;
           user.coronaBeds = req.body.coronaBeds;
-          user.totalAvaibleBeds = req.body.totalAvaibleBeds;
-          user.coronaAvaibleBeds = req.body.coronaAvaibleBeds;
+          user.totalAvailableBeds = req.body.totalAvailableBeds;
+          user.coronaAvailableBeds = req.body.coronaAvailableBeds;
 
           let newDest = `images/${user._id}`;
           let name = "cover.jpg";
@@ -112,10 +112,10 @@ usersRouter.post('/update',authenticate.verifyUser,upload.single('imageFile'), (
             user.totalBeds = req.body.totalBeds;
           if(req.body.coronaBeds)
             user.coronaBeds = req.body.coronaBeds;
-          if(req.body.totalAvaibleBeds)
-            user.totalAvaibleBeds = req.body.totalAvaibleBeds;
+          if(req.body.totalAvailableBeds)
+            user.totalAvailableBeds = req.body.totalAvailableBeds;
           if(req.body.coronaAvaibleBeds)
-          user.coronaAvaibleBeds = req.body.coronaAvaibleBeds;
+          user.coronaAvailableBeds = req.body.coronaAvailableBeds;
           if(req.file){
 
             let ext = req.file.mimetype.split("/")[1];

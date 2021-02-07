@@ -12,7 +12,7 @@ searchRouter.use(bodyParser.json());
 
 searchRouter.route('/')
 .get((req, res, next) => {
-    User.aggregate([{ $match: { governorate:req.body.governorate} }]).sort({ coronaAvaibleBeds: -1,totalAvaibleBeds: -1}).project({_id:1 ,name:1 ,image:1})
+    User.aggregate([{ $match: { governorate:req.body.city} }]).sort({ coronaAvaibleBeds: -1,totalAvaibleBeds: -1}).project({_id:1 ,name:1 ,image:1})
         .then((users,err) => {
             if(err) {
                 res.statusCode = 404;
@@ -31,7 +31,7 @@ searchRouter.route('/')
 
 searchRouter.route('/:userId')
 .get((req, res, next) => {
-    User.findById(req.params.userId,'coronaAvaibleBeds totalAvaibleBeds')
+    User.findById(req.params.userId,'coronaAvaibleBeds totalAvaibleBeds coronaBeds totalBeds')
         .then((user,err) => {
             if(err) {
                 res.statusCode = 404;
@@ -51,8 +51,10 @@ searchRouter.route('/:userId')
                         else{
 
                             let data = {
-                                coronaAvaibleBeds: user.coronaAvaibleBeds,
-                                totalAvaibleBeds: user.totalAvaibleBeds,
+                                totalBeds: user.totalBeds,
+                                coronaBeds: user.coronaBeds,
+                                coronaAvaibleBeds: user.coronaAvailableBeds,
+                                totalAvaibleBeds: user.totalAvailableBeds,
                                 posts: posts
                             };
 
