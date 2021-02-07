@@ -2,16 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
 
-const coord = new Schema({
-    latitude:{
-        type: Number,
-        default: 0 
-    },
-    longitude:{
-        type: Number,
-        default: 0
-    }
-});
 
 const hospitalSchema = new Schema({
     name: {
@@ -60,7 +50,7 @@ const hospitalSchema = new Schema({
         type: String,
         default: ""
     },
-    admin:   {
+    accepted:   {
         type: Boolean,
         default: false
     }
