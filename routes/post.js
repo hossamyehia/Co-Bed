@@ -56,14 +56,22 @@ postsRouter.route('/')
             else{  
                 if(req.file){
                     let ext = req.file.mimetype.split("/")[1];
-                    let newPath = `/images/${req.user._id}/posts`;
-                    let oldName = `tmp/uploads/${req.file.filename}`;
-                    let newName = `${newPath}/${post._id}.${ext}`;
-                    post.image = newName;
+                    let name = `${post._id}.${ext}`
+                    let newDest = `images/${req.user._id}/posts`;
+                    let oldPath = `tmp/uploads/${req.file.filename}`;
+                    let newPath = `${newDest}/${name}`;
+                    let imageData = {
+                        fieldname: "imageFile",
+                        originalname: name,
+                        mimetype: req.file.mimetype,
+                        destination: `public/${newDest}`,
+                        Path: `public/${newPath}`
+                    }
 
-                    fs.rename(oldName,`public${newName}`, (err) => {
-                        if (err) throw err;
-                        });
+                    post.image = newPath;
+                    fs.renameSync(oldPath,`public/${newPath}`);
+                
+                    driveAPI.uploadImage(imageData);
                 }
                 else{
                     post.image = null;
@@ -102,14 +110,23 @@ postsRouter.route('/')
                         post.description = req.body.description
                     if(req.file){
                         let ext = req.file.mimetype.split("/")[1];
-                        let newPath = `/images/${req.user._id}/posts`;
-                        let oldName = `tmp/uploads/${req.file.filename}`;
-                        let newName = `${newPath}/${post._id}.${ext}`;
-                        post.image = newName;
+                        let name = `${post._id}.${ext}`
+                        let newDest = `images/${req.user._id}/posts`;
+                        let oldPath = `tmp/uploads/${req.file.filename}`;
+                        let newPath = `${newDest}/${name}`;
+                        let imageData = {
+                            fieldname: "imageFile",
+                            originalname: name,
+                            mimetype: req.file.mimetype,
+                            destination: `public/${newDest}`,
+                            Path: `public/${newPath}`
+                        }
 
-                        fs.rename(oldName,`public${newName}`, (err) => {
-                            if (err) throw err;
-                            });
+                        post.image = newPath;
+
+                        fs.renameSync(oldPath,`public/${newPath}`);
+                        
+                        driveAPI.updateImage(imageData);
                     }
 
                     post.save()
@@ -147,9 +164,10 @@ postsRouter.route('/')
             else{
                 if(post.author == req.user._id){
                     if(post.image){
-                        fs.rm(`public${post.image}`, { recursive: true }, (err) => {
+                        fs.rm(`public/${post.image}`, { recursive: true }, (err) => {
                             if (err) throw err;
                             });
+                        driveAPI.deleteImage(post.id,post.author)
                     }
                     Post.deleteOne(post)
                         .then((report,err) => {

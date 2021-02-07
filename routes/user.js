@@ -6,6 +6,7 @@ const multer = require('multer');
 
 const authenticate = require('../config/authenticate');
 const User = require('../models/users');
+const driveAPI = require('../config/driveAPI');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -54,23 +55,19 @@ usersRouter.post('/signup', (req, res, next) => {
           user.totalAvaibleBeds = req.body.totalAvaibleBeds;
           user.coronaAvaibleBeds = req.body.coronaAvaibleBeds;
 
-          let newPath = `/images/${user._id}`;
-          let newName = `${newPath}/cover.jpg`;
-          let oldName = `public/images/default.jpg`;
-          user.image = newName;
-          
-          fs.mkdir(`public${newPath}/posts`, { recursive: true }, (err) => {
-            if (err) throw err;
-            });
+          let newDest = `images/${user._id}`;
+          let name = "cover.jpg";
+          let newPath = `${newDest}/${name}`;
+          let oldPath = `public/images/default.jpg`;
+          user.image = newPath;
 
-          fs.mkdir(`public${newPath}`, { recursive: true }, (err) => {
-            if (err) throw err;
-            });
+          fs.mkdirSync(`public/${newDest}`, { recursive: true });
+
+          fs.mkdirSync(`public/${newDest}/posts`, { recursive: true });
             
-          fs.copyFile(oldName,`public${newName}`, (err) => {
-            if (err) throw err;
-            });
+          fs.copyFileSync(oldPath,`public/${newPath}`);
 
+          
           user.save((err, user) => {
             if (err) {
               res.statusCode = 500;
@@ -83,6 +80,8 @@ usersRouter.post('/signup', (req, res, next) => {
                 res.setHeader('Content-Type', 'application/json');
                 res.json({success: true, status: 'Registration Successful!'});
               });
+
+              driveAPI.newUserFolder(user._id);
             }
         });
         }
@@ -118,15 +117,26 @@ usersRouter.post('/update',authenticate.verifyUser,upload.single('imageFile'), (
           if(req.body.coronaAvaibleBeds)
           user.coronaAvaibleBeds = req.body.coronaAvaibleBeds;
           if(req.file){
-            let ext = req.file.mimetype.split("/")[1];
-            let newPath = `/images/${user._id}`;
-            let newName = `${newPath}/cover.${ext}`;
-            let oldName = `tmp/uploads/${req.file.filename}`;
-            user.image = newName;
 
-            fs.rename(oldName,`public${newName}`, (err) => {
-              if (err) throw err;
-              });
+            let ext = req.file.mimetype.split("/")[1];
+            let newDest = `images/${user._id}`;
+            let name = `cover.${ext}`
+            let newPath = `${newDest}/${name}`;
+            let oldPath = `tmp/uploads/${req.file.filename}`;
+            let imageData = {
+              fieldname: "imageFile",
+              originalname: name,
+              mimetype: req.file.mimetype,
+              destination: `public/${newDest}`,
+              Path: `public/${newPath}`
+            }
+            
+            fs.rmSync(`public/${user.image}`, { recursive: true });
+            
+            user.image = newPath;
+            fs.renameSync(oldPath,`public/${newPath}`);
+            
+            driveAPI.updateImage(imageData); 
           }
 
         user.save((err, user) => {

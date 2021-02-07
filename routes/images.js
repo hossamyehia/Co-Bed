@@ -1,16 +1,23 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const authenticate = require('../config/authenticate');
+const fs = require('fs')
+const driveAPI = require('../config/driveAPI');
 
 
-const uploadRouter = express.Router();
+const getImageRouter = express.Router();
 
-uploadRouter.use(bodyParser.json());
+getImageRouter.use(bodyParser.json());
 
-uploadRouter.route('/:userId/:imageName')
-.get((req, res, next) => {
-    let filePath = `/images/${req.params.userId}/${req.params.imageName}`; 
-    res.sendFile(filePath);
+getImageRouter.route('/:userId/:imageName')
+.get(async (req, res, next) => {
+    let fileDest = `images/${req.params.userId}`
+    let filePath = `${fileDest}/${req.params.imageName}`; 
+    if(fs.existsSync(`public/${filePath}`))
+        res.sendFile(filePath);
+    else{
+        await driveAPI.getImage(fileDest,req.params.imageName,req.file);
+        res.sendFile(filePath);
+    }
 })
 .post((req, res) => {
     res.statusCode = 403;
@@ -25,10 +32,16 @@ uploadRouter.route('/:userId/:imageName')
     res.end('DELETE operation not supported');
 });
 
-uploadRouter.route('/:userId/posts/:imageName')
-.get((req, res, next) => {
-    let filePath = `/images/${req.params.userId}/${req.params.imageName}`; 
-    res.sendFile(filePath);
+getImageRouter.route('/:userId/posts/:imageName')
+.get(async (req, res, next) => {
+    let fileDest = `images/${req.params.userId}/post`
+    let filePath = `${fileDest}/${req.params.imageName}`;
+    if(fs.existsSync(`public/${filePath}`))
+        res.sendFile(filePath);
+    else{
+        await driveAPI.getImage(fileDest,req.params.imageName,req.file);
+        res.sendFile(filePath)
+    }
 })
 .post((req, res) => {
     res.statusCode = 403;
@@ -43,4 +56,4 @@ uploadRouter.route('/:userId/posts/:imageName')
     res.end('DELETE operation not supported');
 });
 
-module.exports = uploadRouter;
+module.exports = getImageRouter;
