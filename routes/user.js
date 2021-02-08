@@ -158,7 +158,7 @@ usersRouter.post('/update',authenticate.verifyUser,upload.single('imageFile'), (
 
   
 usersRouter.post('/login', passport.authenticate('local'), (req, res) => {
-  User.findById(req.user._id).aggregate([{ $project: { accepted: 0, username: 0, salt: 0,hash: 0,__v: 0 } }]) 
+  User.aggregate([{ $match: { _id: req.user._id } },{ $project: { accepted: 0, username: 0, salt: 0,hash: 0,__v: 0 } }]) 
       .then((user, err) => {
         if(err) {
           res.statusCode = 404;
