@@ -158,10 +158,20 @@ usersRouter.post('/update',authenticate.verifyUser,upload.single('imageFile'), (
 
   
 usersRouter.post('/login', passport.authenticate('local'), (req, res) => {
-  let token = authenticate.getToken({_id: req.user._id});
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
-  res.json({success: true, token: token, status: 'You are successfully logged in!'});
+  User.findById(req.user._id).aggregate([{ $project: { accepted: 0, username: 0, salt: 0,hash: 0,__v: 0 } }]) 
+      .then((user, err) => {
+        if(err) {
+          res.statusCode = 404;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({err: err});
+        }
+        else {
+          let token = authenticate.getToken({_id: req.user._id});
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: true, token: token, user: user, status: 'You are successfully logged in!'}); 
+        }
+      });
 });
 
 module.exports = usersRouter;

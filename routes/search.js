@@ -12,7 +12,7 @@ searchRouter.use(bodyParser.json());
 
 searchRouter.route('/')
 .get((req, res, next) => {
-    User.aggregate([{ $match: { city:req.body.city} }]).sort({ coronaAvailableBeds: -1,totalAvailableBeds: -1}).project({ _id:1, name:1 , image:1, totalBeds: 1, coronaBeds: 1, coronaAvailableBeds: 1, totalAvailableBeds: 1})
+    User.aggregate([{ $match: { city:req.body.city} }]).sort({ coronaAvailableBeds: -1,totalAvailableBeds: -1}).project({ accepted: 0, username: 0, salt: 0,hash: 0,__v: 0 })
         .then((users,err) => {
             if(err) {
                 res.statusCode = 404;
