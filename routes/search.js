@@ -12,7 +12,7 @@ searchRouter.use(bodyParser.json());
 
 searchRouter.route('/')
 .get((req, res, next) => {
-    User.aggregate([{ $match: { governorate:req.body.city} }]).sort({ coronaAvaibleBeds: -1,totalAvaibleBeds: -1}).project({_id:1 ,name:1 ,image:1})
+    User.aggregate([{ $match: { city:req.body.city} }]).sort({ coronaAvailableBeds: -1,totalAvailableBeds: -1}).project({ _id:1, name:1 , image:1, totalBeds: 1, coronaBeds: 1, coronaAvailableBeds: 1, totalAvailableBeds: 1})
         .then((users,err) => {
             if(err) {
                 res.statusCode = 404;
@@ -31,44 +31,19 @@ searchRouter.route('/')
 
 searchRouter.route('/:userId')
 .get((req, res, next) => {
-    User.findById(req.params.userId,'coronaAvaibleBeds totalAvaibleBeds coronaBeds totalBeds')
-        .then((user,err) => {
+     Post.aggregate([{ $match: { author: req.params.userId } }]).sort({ createdAt: -1}).project({ author: 0, createdAt: 0, updatedAt: 0})
+        .then((posts,err) => {
             if(err) {
                 res.statusCode = 404;
                 res.setHeader('Content-Type', 'application/json');
                 res.json({err: err});
             }
             else{
-                
-                Post.aggregate([{ $match: { author: req.params.userId } }]).sort({ createdAt: -1}).project({ author: 0, createdAt: 0, updatedAt: 0})
-                    .then((posts,err) => {
-                        if(err) {
-                            res.statusCode = 404;
-                            res.setHeader('Content-Type', 'application/json');
-                            res.json({err: err});
-                            return;
-                        }
-                        else{
-
-                            let data = {
-                                totalBeds: user.totalBeds,
-                                coronaBeds: user.coronaBeds,
-                                coronaAvaibleBeds: user.coronaAvailableBeds,
-                                totalAvaibleBeds: user.totalAvailableBeds,
-                                posts: posts
-                            };
-
-                            res.statusCode = 200;
-                            res.setHeader('Content-Type', 'application/json');
-                            res.json(data);
-                        }
-                            
-                    });
-
-                
-            }
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(posts);
+            }                
         });
-    
 });
 
 
