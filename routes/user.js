@@ -102,8 +102,8 @@ usersRouter.post('/update',authenticate.verifyUser,upload.single('imageFile'), (
             user.name = req.body.name;
           if(req.body.phoneNumber)
             user.phoneNumber = req.body.phoneNumber;
-          if(req.body.governorate)  
-            user.governorate = req.body.governorate;
+          if(req.body.city)  
+            user.city = req.body.city;
           if(req.body.latitude)
             user.coordinates.latitude = req.body.latitude;
           if(req.body.longitude)
