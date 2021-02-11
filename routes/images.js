@@ -32,6 +32,7 @@ getImageRouter.route('/:userId/:imageName')
     res.end('DELETE operation not supported');
 });
 
+
 getImageRouter.route('/:userId/posts/:imageName')
 .get(async (req, res, next) => {
     let fileDest = `images/${req.params.userId}/post`

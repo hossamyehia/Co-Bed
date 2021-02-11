@@ -31,7 +31,7 @@ searchRouter.route('/')
 
 searchRouter.route('/:userId')
 .get((req, res, next) => {
-    User.aggregate([{ $match: { _id :req.params.userId} },{ $project: {_id: 0, image: 0, city: 0, name: 0, accepted: 0, username: 0, salt: 0,hash: 0,__v: 0}} ])
+    User.findById(req.params.userId)
         .then((user,err) => {
             if(err) {
                 res.statusCode = 404;
@@ -39,7 +39,14 @@ searchRouter.route('/:userId')
                 res.json({err: err});
             }
             else{
-                let data = user;
+                let data = {
+                    totalBeds: user.totalBeds,
+                    coronaBeds: user.coronaBeds,
+                    coronaAvailableBeds: user.coronaAvailableBeds,
+                    totalAvailableBeds: user.totalAvailableBeds,
+                    coordinates: user.coordinates,
+                    phoneNumber: user.phoneNumber
+                };
                 Post.aggregate([{ $match: { author: req.params.userId } }]).sort({ createdAt: -1}).project({ author: 0, createdAt: 0, updatedAt: 0})
                     .then((posts,err) => {
                         if(err) {
