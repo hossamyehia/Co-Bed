@@ -93,9 +93,11 @@ postsRouter.route('/')
                 
             }
         });
-})
+});
+
+postsRouter.route('/:postId')
 .put(authenticate.verifyUser,(req, res, next) => {
-    Post.findById(req.body._id)
+    Post.findById(req.params.postId)
         .then((post,err) => {
             if(err) {
                 res.statusCode = 404;
@@ -154,7 +156,7 @@ postsRouter.route('/')
     
 })
 .delete(authenticate.verifyUser,(req, res, next) => {
-    Post.findById(req.body._id)
+    Post.findById(req.params.postId)
         .then((post,err) => {
             if(err) {
                 res.statusCode = 404;
