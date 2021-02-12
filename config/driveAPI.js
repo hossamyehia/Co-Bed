@@ -227,32 +227,39 @@ module.exports.getImage = (imageDest,imageName,res) => {
   let fileName = imageName.split(".")[0];
   let filePath = `public/${imageDest}/${fileName}.json`;
   let imagePath = `public/${imageDest}/${imageName}`;
-
-  fs.readFile(filePath, 'utf8' , (err, data,file) => {
-    if (err){
-        throw err;
-    } 
-    else {
-      imageData = JSON.parse(data);
-      
-      let fileId = imageData.id;
-      let dest = fs.createWriteStream(imagePath);
-      
-      drive.files.get({
-        fileId: fileId,
-        alt: 'media'
-      },{responseType: 'stream'},(err, res) =>{
-        res.data
-        .on('end', () => {
-          console.log('Done');
-        })
-        .on('error', err => {
-          console.log('Error', err);
-        })
-        .pipe(dest);
-      });
-    }
-  });
+  
+  if(fs.existsSync(filePath)){
+    fs.readFile(filePath, 'utf8' , (err, data,file) => {
+      if (err){
+          throw err;
+      } 
+      else {
+        imageData = JSON.parse(data);
+        
+        let fileId = imageData.id;
+        let dest = fs.createWriteStream(imagePath);
+        
+        drive.files.get({
+          fileId: fileId,
+          alt: 'media'
+        },{responseType: 'stream'},(err, res) =>{
+          res.data
+          .on('end', () => {
+            console.log('Done');
+          })
+          .on('error', err => {
+            console.log('Error', err);
+          })
+          .pipe(dest);
+        });
+      }
+    });
+    return true;
+  }
+  else{
+    return false;
+  }
+  
 }
 
 module.exports.deleteImage = (postId,userId) => {

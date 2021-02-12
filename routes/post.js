@@ -166,10 +166,12 @@ postsRouter.route('/:postId')
             else{
                 if(post.author == req.user._id){
                     if(post.image){
-                        fs.rm(`public/${post.image}`, { recursive: true }, (err) => {
-                            if (err) throw err;
-                            });
-                        driveAPI.deleteImage(post.id,post.author)
+                        if(fs.existsSync(`public/${post.image}`)){
+                            fs.rm(`public/${post.image}`, { recursive: true }, (err) => {
+                                if (err) throw err;
+                                });
+                            driveAPI.deleteImage(post.id,post.author)
+                        }   
                     }
                     Post.deleteOne(post)
                         .then((report,err) => {

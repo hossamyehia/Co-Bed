@@ -15,8 +15,14 @@ getImageRouter.route('/:userId/:imageName')
     if(fs.existsSync(`public/${filePath}`))
         res.sendFile(filePath);
     else{
-        await driveAPI.getImage(fileDest,req.params.imageName,req.file);
-        res.sendFile(filePath);
+        const exist = await driveAPI.getImage(fileDest,req.params.imageName,req);
+        if(exist)
+            res.sendFile(filePath);
+        else{
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({err: "Image does not exist"});
+        }
     }
 })
 .post((req, res) => {
@@ -40,8 +46,14 @@ getImageRouter.route('/:userId/posts/:imageName')
     if(fs.existsSync(`public/${filePath}`))
         res.sendFile(filePath);
     else{
-        await driveAPI.getImage(fileDest,req.params.imageName,req.file);
-        res.sendFile(filePath)
+        const exist = await driveAPI.getImage(fileDest,req.params.imageName,req);
+        if(exist)
+            res.sendFile(filePath);
+        else{
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({err: "Image does not exist"});
+        }
     }
 })
 .post((req, res) => {
