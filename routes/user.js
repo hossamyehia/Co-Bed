@@ -88,7 +88,7 @@ usersRouter.post('/signup', (req, res, next) => {
       });
 });
 
-usersRouter.post('/update',authenticate.verifyUser,upload.single('imageFile'), (req, res, next) => {
+usersRouter.put('/update',authenticate.verifyUser,upload.single('imageFile'), (req, res, next) => {
   User.findById(req.user._id) 
       .then((user, err) => {
         if(err) {
