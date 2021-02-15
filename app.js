@@ -13,7 +13,7 @@ dotenv.config();
 const usersRouter = require("./routes/user");
 const postsRouter = require("./routes/post");
 const searchRouter = require("./routes/search");
-const imagesRouter = require("./routes/images")
+const imageRouter = require("./routes/image")
 
 connectDB();
 
@@ -34,7 +34,7 @@ app.use(express.static('public'));
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/search', searchRouter);
-app.use('/images', imagesRouter);
+app.use('/images', imageRouter);
 
 
 // catch 404 and forward to error handler

@@ -56,9 +56,9 @@ usersRouter.post('/signup', (req, res, next) => {
           user.coronaAvailableBeds = req.body.coronaAvailableBeds;
 
           let newDest = `images/${user._id}`;
-          let name = "cover.jpg";
+          let name = "cover.png";
           let newPath = `${newDest}/${name}`;
-          let oldPath = `public/images/default.jpg`;
+          let oldPath = `public/images/default.png`;
           user.image = newPath;
 
           fs.mkdirSync(`public/${newDest}`, { recursive: true });
@@ -114,8 +114,8 @@ usersRouter.put('/update',authenticate.verifyUser,upload.single('imageFile'), (r
             user.coronaBeds = req.body.coronaBeds;
           if(req.body.totalAvailableBeds)
             user.totalAvailableBeds = req.body.totalAvailableBeds;
-          if(req.body.coronaAvaibleBeds)
-          user.coronaAvailableBeds = req.body.coronaAvailableBeds;
+          if(req.body.coronaAvailableBeds)
+            user.coronaAvailableBeds = req.body.coronaAvailableBeds;
           if(req.file){
 
             let ext = req.file.mimetype.split("/")[1];
@@ -130,8 +130,9 @@ usersRouter.put('/update',authenticate.verifyUser,upload.single('imageFile'), (r
               destination: `public/${newDest}`,
               Path: `public/${newPath}`
             }
-            
-            fs.rmSync(`public/${user.image}`, { recursive: true });
+
+            if(fs.existsSync(`public/${user.image}`))
+              fs.rmSync(`public/${user.image}`, { recursive: true });
             
             user.image = newPath;
             fs.renameSync(oldPath,`public/${newPath}`);

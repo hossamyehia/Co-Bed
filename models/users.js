@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
 
 
-const hospitalSchema = new Schema({
+const organizationSchema = new Schema({
     name: {
         type: String,
         default: ''
@@ -56,8 +56,8 @@ const hospitalSchema = new Schema({
     }
 });
 
-hospitalSchema.plugin(passportLocalMongoose);
+organizationSchema.plugin(passportLocalMongoose);
 
-var hospitals = mongoose.model('hospital', hospitalSchema);
+var organizations = mongoose.model('organizations', organizationSchema);
 
-module.exports = hospitals;
+module.exports = organizations;

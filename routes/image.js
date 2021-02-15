@@ -10,14 +10,18 @@ getImageRouter.use(bodyParser.json());
 
 getImageRouter.route('/:userId/:imageName')
 .get(async (req, res, next) => {
-    let fileDest = `images/${req.params.userId}`
+    let fileDest = `images/${req.params.userId}`;
     let filePath = `${fileDest}/${req.params.imageName}`; 
     if(fs.existsSync(`public/${filePath}`))
         res.sendFile(filePath);
     else{
-        const exist = await driveAPI.getImage(fileDest,req.params.imageName,req);
-        if(exist)
-            res.sendFile(filePath);
+        
+        let exist = await driveAPI.getImage(fileDest,`public/${filePath}`,req.params.imageName,req.params.userId);
+        console.log("exist: "+exist)
+        if(exist){
+            res.redirect(`/${req.params.userId}/${req.params.imageName}`);
+            //res.sendFile(filePath);
+        }
         else{
             res.statusCode = 404;
             res.setHeader('Content-Type', 'application/json');
@@ -41,14 +45,17 @@ getImageRouter.route('/:userId/:imageName')
 
 getImageRouter.route('/:userId/posts/:imageName')
 .get(async (req, res, next) => {
-    let fileDest = `images/${req.params.userId}/post`
+    let fileDest = `images/${req.params.userId}/posts`
     let filePath = `${fileDest}/${req.params.imageName}`;
     if(fs.existsSync(`public/${filePath}`))
         res.sendFile(filePath);
     else{
-        const exist = await driveAPI.getImage(fileDest,req.params.imageName,req);
-        if(exist)
-            res.sendFile(filePath);
+        let exist = await driveAPI.getImage(fileDest,`public/${filePath}`,req.params.imageName,req.params.userId);
+        console.log("exist: "+exist)
+        if(exist){
+            res.redirect(`/${req.params.userId}/${req.params.imageName}`);
+            //res.sendFile(filePath).end();
+        }
         else{
             res.statusCode = 404;
             res.setHeader('Content-Type', 'application/json');
