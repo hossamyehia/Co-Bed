@@ -56,9 +56,9 @@ usersRouter.post('/signup', (req, res, next) => {
           user.coronaAvailableBeds = req.body.coronaAvailableBeds;
 
           let newDest = `images/${user._id}`;
-          let name = "cover.png";
+          let name = "cover.jpeg";
           let newPath = `${newDest}/${name}`;
-          let oldPath = `public/images/default.png`;
+          let oldPath = `public/images/default.jpeg`;
           user.image = newPath;
 
           fs.mkdirSync(`public/${newDest}`, { recursive: true });

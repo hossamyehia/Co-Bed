@@ -1,3 +1,4 @@
+const { error } = require('console');
 const fs = require('fs');
 const {google} = require('googleapis');
 
@@ -5,11 +6,11 @@ const Image = require('../models/images');
 
 const defaultImage = {
     fieldname: "imageFile",
-    originalname: "default.png",
-    mimetype: "image/png",
+    originalname: "default.jpeg",
+    mimetype: "image/jpeg",
     destination: "/public/images",
-    Path: "/public/images/default.png",
-    idOnDrive: "1fklE4PWaGBETImSE4UXXJa2nXF9sUzV0",
+    Path: "/public/images/default.jpeg",
+    idOnDrive: "10_5PLMwnMSMDnBNoboZbgRo7A4Ot70bO",
     parentId: "1hZwfDidEke35yXro4ZWXzTeRT0ex7A18"
 }
 
@@ -31,6 +32,8 @@ module.exports.newUserFolder = (name) => {
     let parent = {};
     let defaultCover = defaultImage;
     defaultCover.userId = name;
+    defaultCover.destination = `public/images/${name}`;
+    defaultCover.Path = `${defaultCover.destination}/cover.jpeg`;
     
     let fileMetadata = {
       name: name,
@@ -41,66 +44,58 @@ module.exports.newUserFolder = (name) => {
     drive.files.create({
       resource: fileMetadata,
       fields: 'id'
-    },(err, file) => {
-      if (err) {
-        throw err;
-      }
-      else{
-        parent.id = file.data.id;
-        defaultCover.parentId = file.data.id;
-        
-        fileMetadata = {
-          name: 'cover.png',
-          mimeType: defaultImage.mimetype,
-          parents: [parent.id]
-        };
+    })
+    .then((file) => {
 
-        drive.files.copy({
-          resource: fileMetadata,
-          fileId: defaultImage.idOnDrive,
-          fields: 'id'
-        },(err, file) => {
-          if (err) {
-            throw err;
-          }
-          else{
-            defaultCover.idOnDrive = file.data.id;
-            
-            drive.files.update({
-              fileId: defaultCover.idOnDrive,
-              addParents: defaultCover.parentId,
-              removeParents: defaultImage.parentId,
-              fields: 'id, parents'
-            },(err, file) => {
-              if (err) throw err; 
-            });
-          }
-        });
-        
+      parent.id = file.data.id;
+      defaultCover.parentId = file.data.id;
+      
+      fileMetadata = {
+        name: 'cover.png',
+        mimeType: defaultImage.mimetype,
+        parents: [parent.id]
+      };
 
-        fileMetadata = {
-          name: 'posts',
-          mimeType: 'application/vnd.google-apps.folder',
-          parents: [parent.id]
-        };
+      drive.files.copy({
+        resource: fileMetadata,
+        fileId: defaultImage.idOnDrive,
+        fields: 'id'
+      })
+      .then((file) => {
+      
+        defaultCover.idOnDrive = file.data.id;
 
-        drive.files.create({
-          resource: fileMetadata,
-          fields: 'id'
-        },(err, file) => {
-          if (err) {
-            throw err;
-          }
-          else{
+        drive.files.update({
+          fileId: defaultCover.idOnDrive,
+          addParents: defaultCover.parentId,
+          removeParents: defaultImage.parentId,
+          fields: 'id, parents'
+        })
+        .then((file) => {
+
+          fileMetadata = {
+            name: 'posts',
+            mimeType: 'application/vnd.google-apps.folder',
+            parents: [parent.id]
+          };
+  
+          drive.files.create({
+            resource: fileMetadata,
+            fields: 'id'
+          })
+          .then((file) => {
             defaultCover.postsFolderId = file.data.id;
             Image.create(defaultCover)
                     .then((image,err) => {
                       if (err) throw err;
                     })
-          }
-        });
-      }
-    });
+          }).catch(err => {throw err});
+          
+        }).catch(err => {throw err});
+      
+      }).catch(err => {throw err});
+         
+    }).catch(err => {throw err});
              
 }
 
@@ -128,10 +123,13 @@ module.exports.uploadImage = (imageData) => {
   else{
     userId = imageData.destination.split("/")[2];    
   }
-
+  
   Image.findOne({ userId: userId, postImage: false , postId: "" })
-      .then((image, err) => {
-        if (err) throw err
+      .then((image) => {
+        if (!image) {
+          const Error = new error("This user doesnot exist in our database");
+          console.log(Error);
+        }
         else{
           if (folderName == "posts"){
             fileMetadata.parents = [image.postsFolderId];
@@ -149,27 +147,23 @@ module.exports.uploadImage = (imageData) => {
             resource: fileMetadata,
             media: media,
             fields: 'id'
-          },(err, file) => {
-            if (err) {
-              throw err;
-            } 
-            else {
-              imageData.idOnDrive  = file.data.id;
-              Image.create(imageData)
-                  .then((image,err) => {
-                    if (err) throw err;
-                  })
-            }
           })
+          .then((file) => {
+            imageData.idOnDrive  = file.data.id;
+            Image.create(imageData)
+                .then((image,err) => {
+                  if (err) throw err;
+                })
+          }).catch(err => {throw err})
         }
-      });
+      }).catch(err => {throw err});
 
 }
 
 module.exports.updateImage = (imageData) => {
   
-  let folderName = imageData.destination.split("/")[2];
-  let userId = imageData.destination.split("/")[1]
+  let folderName = imageData.destination.split("/")[3];
+  let userId = imageData.destination.split("/")[2]
   let name = imageData.originalname.split(".")[0];
   let find = {};
 
@@ -179,7 +173,7 @@ module.exports.updateImage = (imageData) => {
   };
   let media = {
     mimeType: imageData.mimeType,
-    body: fs.createReadStream(imageData.path)
+    body: fs.createReadStream(imageData.Path)
   };
 
   if (folderName){
@@ -198,15 +192,16 @@ module.exports.updateImage = (imageData) => {
     imageData.postId = "";
     imageData.postImage = false;
   }
-
+  
   Image.findOne(find)
-      .then((image, err) => {
-        if (err){
+      .then((image) => {
+        if (!image){
           this.uploadImage(imageData);
         }
         else{
+          
           fileMetadata.parents = [image.parentId];
-          imageData.parentid = image.parentId;
+          imageData.parentId = image.parentId;
           imageData.postsFolderId = image.postsFolderId;
 
           drive.files.delete({
@@ -237,7 +232,7 @@ module.exports.updateImage = (imageData) => {
           
           });
         }
-      });
+      }).catch(err => {throw err});
 }
 
 module.exports.getImage = (imageDest,imagePath,imageName,userId) => {
@@ -256,66 +251,67 @@ module.exports.getImage = (imageDest,imagePath,imageName,userId) => {
     find.postId = "";
     find.postImage = false;
   }
-  console.log(find);
 
   Image.findOne(find)
-      .then((image, err) => {
-        if (err){
-          return new Promise(resolve => {resolve(false);});
+      .then((image) => {
+        if (!image){
+          return false
         }
         else{
           
-          if(fs.existsSync(`public/${imageDest}`))
+          if(!(fs.existsSync(`public/${imageDest}`)))
             fs.mkdirSync(`public/${imageDest}`, { recursive: true });
 
           let fileId = image.idOnDrive;
-          let dest = fs.createWriteStream(imagePath);
-
-          return new Promise((resolve,reject) => {
-            drive.files.get({
-              fileId: fileId,
-              alt: 'media'
-            },{responseType: "stream" },(err, {data}) =>{
-                data
-                .on('end', function () {
-                  resolve(true);
-                })
-                .on('error', function (err) {
-                  reject(err)
-                })
-                .pipe(dest); 
-            });
+          let dest = fs.createWriteStream(image.Path);
+        
+          drive.files.get({
+            fileId: fileId,
+            alt: 'media'
+          },{responseType: "stream" },(err, {data}) =>{
+              data
+              .on('end', function () {
+                return true;
+              })
+              .on('error', function (err) {
+                throw err;
+              })
+              .pipe(dest); 
           }); 
         }
-      });
+      }).catch(err => {throw err});
   
 }
 
 module.exports.deleteImage = (postId,userId) => {
   
-  let filePath = `/public/images/${userId}/posts/${postId}.json`;
+  let find = {};
+  find.userId = userId;
+  find.postId = postId;
+  find.postImage = true;
 
-  if(fs.existsSync(filePath)){
-    fs.readFile(filePath, 'utf8' , (err, data) => {
-      if (err){
-          throw err;
-      } 
-      else {
-        ImageData = JSON.parse(data);
-          
-        drive.files.delete({
-          fileId: ImageData.idOnDrive
-        },(err) => {
-          if (err) {
-            throw err;
-          } 
-          else{
-            fs.rmSync(filePath, { recursive: true });
-          }
-        }); 
-      }
-    });
-  }
+  Image.findOne(find)
+      .then((image) => {
+        if (!image){
+          const Error = new error("This images doesnot exist in our database");
+          console.log(Error);
+        }
+        else{
+
+          drive.files.delete({
+            fileId: image.idOnDrive
+          },(err) => {
+            if (err) {
+              throw err;
+            } 
+            else{
+              Image.deleteOne(image)
+            }
+          }); 
+         
+        }
+      }).catch(err => {throw err});
+  
 }
 
 
