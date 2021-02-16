@@ -69,6 +69,9 @@ postsRouter.route('/')
                         Path: `public/${newPath}`
                     }
 
+                    if(!(fs.existsSync(`public/${newDest}`)))
+                        fs.mkdirSync(`public/${newDest}`, { recursive: true });
+                    
                     post.image = newPath;
                     fs.renameSync(oldPath,`public/${newPath}`);
                 
@@ -124,6 +127,9 @@ postsRouter.route('/:postId')
                             destination: `public/${newDest}`,
                             Path: `public/${newPath}`
                         }
+                        
+                        if(!(fs.existsSync(`public/${newDest}`)))
+                            fs.mkdirSync(`public/${newDest}`, { recursive: true });
 
                         post.image = newPath;
 

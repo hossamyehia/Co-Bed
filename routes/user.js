@@ -134,6 +134,9 @@ usersRouter.put('/update',authenticate.verifyUser,upload.single('imageFile'), (r
             if(fs.existsSync(`public/${user.image}`))
               fs.rmSync(`public/${user.image}`, { recursive: true });
             
+            if(!(fs.existsSync(`public/${newDest}`)))
+              fs.mkdirSync(`public/${newDest}`, { recursive: true });
+            
             user.image = newPath;
             fs.renameSync(oldPath,`public/${newPath}`);
             
