@@ -35,7 +35,6 @@ const postsRouter = express.Router();
 postsRouter.use(bodyParser.json());
 postsRouter.use(bodyParser.urlencoded({ extended: true }));
 
-
 postsRouter.route('/')
 .post(authenticate.verifyUser, upload.single('imageFile'), (req, res, next) => {
     
