@@ -33,6 +33,7 @@ const upload = multer({ storage: storage, fileFilter: imageFileFilter});
 const postsRouter = express.Router();
 
 postsRouter.use(bodyParser.json());
+postsRouter.use(bodyParser.urlencoded({ extended: true }));
 
 
 postsRouter.route('/')
@@ -100,7 +101,7 @@ postsRouter.route('/')
 });
 
 postsRouter.route('/:postId')
-.put(authenticate.verifyUser,(req, res, next) => {
+.put(authenticate.verifyUser,upload.single('imageFile'),(req, res, next) => {
     Post.findById(req.params.postId)
         .then((post,err) => {
             if(err) {
@@ -111,9 +112,9 @@ postsRouter.route('/:postId')
             else{
                 if(post.author == req.user._id){
                     if(req.body.title)
-                        post.title = req.body.title
+                        newPost.title = req.body.title;
                     if(req.body.description)
-                        post.description = req.body.description
+                        newPost.description = req.body.description; 
                     if(req.file){
                         let ext = req.file.mimetype.split("/")[1];
                         let name = `${post._id}.${ext}`
@@ -131,13 +132,14 @@ postsRouter.route('/:postId')
                         if(!(fs.existsSync(`public/${newDest}`)))
                             fs.mkdirSync(`public/${newDest}`, { recursive: true });
 
-                        post.image = newPath;
+                        newPost.image = newPath;
 
                         fs.renameSync(oldPath,`public/${newPath}`);
                         
                         driveAPI.updateImage(imageData);
                     }
 
+                    console.log(newPost)
                     post.save()
                         .then((post,err) => {
                             if(err) {

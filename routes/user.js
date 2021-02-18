@@ -34,6 +34,7 @@ const upload = multer({ storage: storage, fileFilter: imageFileFilter});
 const usersRouter = express.Router();
 
 usersRouter.use(bodyParser.json());
+usersRouter.use(bodyParser.urlencoded({ extended: true }));
 
 
 usersRouter.post('/signup', (req, res, next) => {

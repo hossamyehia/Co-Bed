@@ -2,9 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs')
 const driveAPI = require('../config/driveAPI');
-const { resolve } = require('path');
-const { rejects } = require('assert');
-
 
 const getImageRouter = express.Router();
 
