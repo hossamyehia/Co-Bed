@@ -7,6 +7,7 @@ const multer = require('multer');
 const authenticate = require('../config/authenticate');
 const User = require('../models/users');
 const driveAPI = require('../config/driveAPI');
+const { file } = require('googleapis/build/src/apis/file');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -118,7 +119,6 @@ usersRouter.put('/update',authenticate.verifyUser,upload.single('imageFile'), (r
           if(req.body.coronaAvailableBeds)
             user.coronaAvailableBeds = req.body.coronaAvailableBeds;
           if(req.file){
-
             let ext = req.file.mimetype.split("/")[1];
             let newDest = `images/${user._id}`;
             let name = `cover.${ext}`

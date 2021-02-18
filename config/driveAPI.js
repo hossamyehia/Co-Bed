@@ -1,6 +1,7 @@
 const { error } = require('console');
 const fs = require('fs');
 const {google} = require('googleapis');
+const { Readable } = require('stream');
 
 const Image = require('../models/images');
 
@@ -26,7 +27,17 @@ const drive = google.drive({
   auth: auth
 });
 
-
+const getFileSize = (fileId) => {
+  return new Promise((resolve, reject) => {
+    drive.files.get({ 
+      fileId:fileId,
+      fields: "size"
+    })
+    .then((file) => {
+      resolve(file.data.size);
+    }).catch(err => {reject(err)});
+  })
+}
 
 module.exports.newUserFolder = (name) => {
     let parent = {};
@@ -221,7 +232,7 @@ module.exports.updateImage = (imageData) => {
                     throw err;
                   } 
                   else {
-                    imageData.onDriveId  = file.data.id;
+                    imageData.idOnDrive  = file.data.id;
                     Image.updateOne(image,imageData)
                         .then((image,err) => {
                           if (err) throw err;
@@ -235,7 +246,7 @@ module.exports.updateImage = (imageData) => {
       }).catch(err => {throw err});
 }
 
-module.exports.getImage = (imageDest,imagePath,imageName,userId) => {
+module.exports.getImage = (imageDest,imagePath,imageName,userId,res) => {
   
   let folderName = imageDest.split('/')[2];
   let name = imageName.split('.')[0];
@@ -253,9 +264,11 @@ module.exports.getImage = (imageDest,imagePath,imageName,userId) => {
   }
 
   Image.findOne(find)
-      .then((image) => {
+      .then(async(image) => {
         if (!image){
-          return false
+          res.statusCode = 404;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({err: "Image does not exist"});
         }
         else{
           
@@ -264,14 +277,19 @@ module.exports.getImage = (imageDest,imagePath,imageName,userId) => {
 
           let fileId = image.idOnDrive;
           let dest = fs.createWriteStream(image.Path);
-        
+
+          const fileSize = await getFileSize(fileId)
+
+          res.setHeader("Content-Type", image.mimetype);
+          res.setHeader("Content-Length", fileSize);
+                  
           drive.files.get({
             fileId: fileId,
             alt: 'media'
-          },{responseType: "stream" },(err, {data}) =>{
-              data
+          },{responseType: "stream" },(err, file) =>{
+              file.data
               .on('end', function () {
-                return true;
+                fs.createReadStream(image.Path).pipe(res);
               })
               .on('error', function (err) {
                 throw err;

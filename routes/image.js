@@ -14,25 +14,7 @@ getImageRouter.route('/:userId/:imageName')
     if(fs.existsSync(`public/${filePath}`))
         res.sendFile(filePath);
     else{
-        
-        const promise = new Promise(async (resolve,reject) => {
-            let exist = await driveAPI.getImage(fileDest,`public/${filePath}`,req.params.imageName,req.params.userId);
-            resolve(exist)
-        })
-        promise.then(exist => {
-            if(exist == false){
-                res.statusCode = 404;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({err: "Image does not exist"});   
-            }
-            else if(exist == true){
-                res.sendFile(filePath);
-            }
-            else{
-                res.redirect(`/images/${req.params.userId}/${req.params.imageName}`);
-            }
-        })
-        
+        driveAPI.getImage(fileDest,`public/${filePath}`,req.params.imageName,req.params.userId,res);
     }
 })
 .post((req, res) => {
@@ -56,16 +38,7 @@ getImageRouter.route('/:userId/posts/:imageName')
     if(fs.existsSync(`public/${filePath}`))
         res.sendFile(filePath);
     else{
-        let exist = await driveAPI.getImage(fileDest,`public/${filePath}`,req.params.imageName,req.params.userId);
-        console.log("exist: "+exist)
-        if(exist){
-            res.sendFile(filePath).end();
-        }
-        else{
-            res.statusCode = 404;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({err: "Image does not exist"});
-        }
+        driveAPI.getImage(fileDest,`public/${filePath}`,req.params.imageName,req.params.userId,res);
     }
 })
 .post((req, res) => {
