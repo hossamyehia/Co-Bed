@@ -111,9 +111,9 @@ postsRouter.route('/:postId')
             else{
                 if(post.author == req.user._id){
                     if(req.body.title)
-                        newPost.title = req.body.title;
+                        post.title = req.body.title;
                     if(req.body.description)
-                        newPost.description = req.body.description; 
+                        post.description = req.body.description; 
                     if(req.file){
                         let ext = req.file.mimetype.split("/")[1];
                         let name = `${post._id}.${ext}`
@@ -131,14 +131,13 @@ postsRouter.route('/:postId')
                         if(!(fs.existsSync(`public/${newDest}`)))
                             fs.mkdirSync(`public/${newDest}`, { recursive: true });
 
-                        newPost.image = newPath;
+                        post.image = newPath;
 
                         fs.renameSync(oldPath,`public/${newPath}`);
                         
                         driveAPI.updateImage(imageData);
                     }
 
-                    console.log(newPost)
                     post.save()
                         .then((post,err) => {
                             if(err) {
