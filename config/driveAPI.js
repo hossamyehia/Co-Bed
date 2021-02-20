@@ -134,12 +134,12 @@ module.exports.uploadImage = (imageData) => {
           imageData.postId = name;
           imageData.userId = userId;
           imageData.postsFolderId = image.postsFolderId;
+          fileMetadata.parents = [image.parentId];
 
           drive.files.update({
             resource: fileMetadata,
             fileId: imageData.idOnDrive,
-            addParents: imageData.parentId,
-            removeParents: ['1R-d0IsG-SLM99rN5kHaD2-K4wHaCM2BJ'],
+            removeParents: ["1R-d0IsG-SLM99rN5kHaD2-K4wHaCM2BJ"],
             fields: 'id, parents'
           })
           .then((file) => {
@@ -193,6 +193,7 @@ module.exports.updateImage = (imageData) => {
           imageData.userId = userId;
           imageData.parentId = image.parentId;
           imageData.postsFolderId = image.postsFolderId;
+          fileMetadata.parents = [image.parentId];
 
           drive.files.delete({
             fileId: image.idOnDrive
@@ -201,12 +202,11 @@ module.exports.updateImage = (imageData) => {
               throw err;
             } 
             else {
-
+  
               drive.files.update({
                 resource: fileMetadata,
                 fileId: imageData.idOnDrive,
-                addParents: imageData.parentId,
-                removeParents: ['1R-d0IsG-SLM99rN5kHaD2-K4wHaCM2BJ'],
+                removeParents: ["1R-d0IsG-SLM99rN5kHaD2-K4wHaCM2BJ"],
                 fields: 'id, parents'
               })
               .then((file) => {
