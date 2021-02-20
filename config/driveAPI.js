@@ -62,7 +62,7 @@ module.exports.newUserFolder = (name) => {
       defaultCover.parentId = file.data.id;
       
       fileMetadata = {
-        name: 'cover.png',
+        name: 'cover.jpeg',
         mimeType: defaultImage.mimetype,
         parents: [parent.id]
       };
