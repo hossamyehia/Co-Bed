@@ -2,13 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const fs =  require('fs');
-const multer = require('multer');
+
 
 const authenticate = require('../config/authenticate');
 const User = require('../models/users');
 const driveAPI = require('../config/driveAPI');
-const { file } = require('googleapis/build/src/apis/file');
 
+/*
+const multer = require('multer');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
       cb(null, 'tmp/uploads');
@@ -30,7 +31,7 @@ const imageFileFilter = (req, file, cb) => {
 
 const upload = multer({ storage: storage, fileFilter: imageFileFilter});
 
-
+*/
 
 const usersRouter = express.Router();
 
@@ -90,7 +91,7 @@ usersRouter.post('/signup', (req, res, next) => {
       });
 });
 
-usersRouter.put('/update',authenticate.verifyUser,upload.single('imageFile'), (req, res, next) => {
+usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
   User.findById(req.user._id) 
       .then((user, err) => {
         if(err) {
@@ -100,38 +101,47 @@ usersRouter.put('/update',authenticate.verifyUser,upload.single('imageFile'), (r
         }
         else {
           
-          if(req.body.name)
+          if(req.body.name){
             user.name = req.body.name;
-          if(req.body.phoneNumber)
+          }
+          if(req.body.phoneNumber){
             user.phoneNumber = req.body.phoneNumber;
-          if(req.body.city)  
+          }
+          if(req.body.city)  {
             user.city = req.body.city;
-          if(req.body.latitude)
-            user.coordinates.latitude = req.body.latitude;
-          if(req.body.longitude)
-            user.coordinates.longitude = req.body.longitude;
-          if(req.body.totalBeds)
+          }
+          if(req.body.coordinates){
+            user.coordinates.latitude = req.body.coordinates.latitude;
+            user.coordinates.longitude = req.body.coordinates.longitude;
+          }
+          if(req.body.totalBeds){
             user.totalBeds = req.body.totalBeds;
-          if(req.body.coronaBeds)
+          }
+          if(req.body.coronaBeds){
             user.coronaBeds = req.body.coronaBeds;
-          if(req.body.totalAvailableBeds)
+          }
+          if(req.body.totalAvailableBeds){
             user.totalAvailableBeds = req.body.totalAvailableBeds;
-          if(req.body.coronaAvailableBeds)
+          } 
+          if(req.body.coronaAvailableBeds){
             user.coronaAvailableBeds = req.body.coronaAvailableBeds;
-          if(req.file){
-            let ext = req.file.mimetype.split("/")[1];
+          }
+          if(req.image){
+            let ext = req.image.mimetype.split("/")[1];
             let newDest = `images/${user._id}`;
             let name = `cover.${ext}`
             let newPath = `${newDest}/${name}`;
-            let oldPath = `tmp/uploads/${req.file.filename}`;
             let imageData = {
               fieldname: "imageFile",
               originalname: name,
-              mimetype: req.file.mimetype,
+              mimetype: req.image.mimetype,
               destination: `public/${newDest}`,
-              Path: `public/${newPath}`
+              Path: `public/${newPath}`,
+              idOnDrive: req.image.id,
             }
-
+             
+            /*
+            let oldPath = `tmp/uploads/${req.file.filename}`;
             if(fs.existsSync(`public/${user.image}`))
               fs.rmSync(`public/${user.image}`, { recursive: true });
             
@@ -140,7 +150,9 @@ usersRouter.put('/update',authenticate.verifyUser,upload.single('imageFile'), (r
             
             user.image = newPath;
             fs.renameSync(oldPath,`public/${newPath}`);
-            
+            */
+
+            user.image = newPath;
             driveAPI.updateImage(imageData); 
           }
 

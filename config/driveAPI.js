@@ -113,28 +113,14 @@ module.exports.newUserFolder = (name) => {
 
 module.exports.uploadImage = (imageData) => {
   
-  let folderName = imageData.destination.split("/")[3];
   let name = imageData.originalname.split(".")[0];
-  let userId;
+  let userId = imageData.destination.split("/")[2];
 
   let fileMetadata = {
     name: imageData.originalname,
-    writersCanShare: true
+    mimeType: imageData.mimetype,
   };
-  let media = {
-    mimeType: imageData.mimeType,
-    body: fs.createReadStream(imageData.Path)
-  };
-
-  if (folderName){
-    userId = imageData.destination.split("/")[2];
-    imageData.postImage = true;
-    imageData.postId = name;
-  }
-  else{
-    userId = imageData.destination.split("/")[2];    
-  }
-  
+   
   Image.findOne({ userId: userId, postImage: false , postId: "" })
       .then((image) => {
         if (!image) {
@@ -142,30 +128,29 @@ module.exports.uploadImage = (imageData) => {
           console.log(Error);
         }
         else{
-          if (folderName == "posts"){
-            fileMetadata.parents = [image.postsFolderId];
-            imageData.parentId = image.postsFolderId;
-          }
-          else{
-            fileMetadata.parents = [image.parentId];
-            imageData.parentId = image.parentId;   
-          }
 
+          imageData.parentId = image.postsFolderId;
+          imageData.postImage = true;
+          imageData.postId = name;
           imageData.userId = userId;
           imageData.postsFolderId = image.postsFolderId;
 
-          drive.files.create({
+          drive.files.update({
             resource: fileMetadata,
-            media: media,
-            fields: 'id'
+            fileId: imageData.idOnDrive,
+            addParents: imageData.parentId,
+            removeParents: ['1R-d0IsG-SLM99rN5kHaD2-K4wHaCM2BJ'],
+            fields: 'id, parents'
           })
           .then((file) => {
-            imageData.idOnDrive  = file.data.id;
+            imageData.idOnDrive = file.data.id;
             Image.create(imageData)
                 .then((image,err) => {
                   if (err) throw err;
                 })
-          }).catch(err => {throw err})
+
+          }).catch(err => {throw err});
+
         }
       }).catch(err => {throw err});
 
@@ -174,32 +159,26 @@ module.exports.uploadImage = (imageData) => {
 module.exports.updateImage = (imageData) => {
   
   let folderName = imageData.destination.split("/")[3];
-  let userId = imageData.destination.split("/")[2]
+  let userId = imageData.destination.split("/")[2];
   let name = imageData.originalname.split(".")[0];
-  let find = {};
+  let find = {
+    userId: userId
+  };
 
   let fileMetadata = {
     name: imageData.originalname,
-    writersCanShare: true
+    mimeType: imageData.mimetype,
   };
-  let media = {
-    mimeType: imageData.mimeType,
-    body: fs.createReadStream(imageData.Path)
-  };
-
+  
   if (folderName){
-    find.userId = userId;
     find.postId = name;
     find.postImage = true;
-    imageData.userId = userId;
     imageData.postId = name;
     imageData.postImage = true;
   }
   else{
-    find.userId = userId;
     find.postId = "";
     find.postImage = false;
-    imageData.userId = userId;
     imageData.postId = "";
     imageData.postImage = false;
   }
@@ -211,7 +190,7 @@ module.exports.updateImage = (imageData) => {
         }
         else{
           
-          fileMetadata.parents = [image.parentId];
+          imageData.userId = userId;
           imageData.parentId = image.parentId;
           imageData.postsFolderId = image.postsFolderId;
 
@@ -223,24 +202,21 @@ module.exports.updateImage = (imageData) => {
             } 
             else {
 
-              drive.files.create({
+              drive.files.update({
                 resource: fileMetadata,
-                media: media,
-                fields: 'id'
-              },(err, file) => {
-                  if (err) {
-                    throw err;
-                  } 
-                  else {
-                    imageData.idOnDrive  = file.data.id;
-                    Image.updateOne(image,imageData)
-                        .then((image,err) => {
-                          if (err) throw err;
-                        })
-                  }
-                });
+                fileId: imageData.idOnDrive,
+                addParents: imageData.parentId,
+                removeParents: ['1R-d0IsG-SLM99rN5kHaD2-K4wHaCM2BJ'],
+                fields: 'id, parents'
+              })
+              .then((file) => {
+                imageData.idOnDrive = file.data.id;
+                Image.updateOne(image,imageData)
+                    .then((image,err) => {
+                      if (err) throw err;
+                    })
+              }).catch(err => {throw err});
             } 
-          
           });
         }
       }).catch(err => {throw err});

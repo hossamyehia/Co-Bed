@@ -1,14 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs =  require('fs');
-const multer = require('multer');
+
 
 
 const authenticate = require('../config/authenticate');
 const Post = require('../models/posts');
 const driveAPI = require("../config/driveAPI")
-
-
+/*
+const multer = require('multer');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
       cb(null, 'tmp/uploads');
@@ -29,6 +29,7 @@ const imageFileFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage: storage, fileFilter: imageFileFilter});
+*/
 
 const postsRouter = express.Router();
 
@@ -36,7 +37,7 @@ postsRouter.use(bodyParser.json());
 postsRouter.use(bodyParser.urlencoded({ extended: true }));
 
 postsRouter.route('/')
-.post(authenticate.verifyUser, upload.single('imageFile'), (req, res, next) => {
+.post(authenticate.verifyUser, (req, res, next) => {
     
     let newPost = {
         author : req.user._id
@@ -54,27 +55,30 @@ postsRouter.route('/')
                 res.setHeader('Content-Type', 'application/json');
                 res.json({err: err});
             }
-            else{  
-                if(req.file){
-                    let ext = req.file.mimetype.split("/")[1];
+            else{
+
+                if(req.image){
+                    let ext = req.image.mimetype.split("/")[1];
                     let name = `${post._id}.${ext}`
                     let newDest = `images/${req.user._id}/posts`;
-                    let oldPath = `tmp/uploads/${req.file.filename}`;
                     let newPath = `${newDest}/${name}`;
                     let imageData = {
                         fieldname: "imageFile",
                         originalname: name,
-                        mimetype: req.file.mimetype,
+                        mimetype: req.image.mimetype,
                         destination: `public/${newDest}`,
-                        Path: `public/${newPath}`
+                        Path: `public/${newPath}`,
+                        idOnDrive: req.image.id,
                     }
-
+                    /*
+                    let oldPath = `tmp/uploads/${req.file.filename}`;
                     if(!(fs.existsSync(`public/${newDest}`)))
                         fs.mkdirSync(`public/${newDest}`, { recursive: true });
                     
                     post.image = newPath;
                     fs.renameSync(oldPath,`public/${newPath}`);
-                
+                    */
+                    post.image = newPath;
                     driveAPI.uploadImage(imageData);
                 }
                 else{
@@ -100,7 +104,7 @@ postsRouter.route('/')
 });
 
 postsRouter.route('/:postId')
-.put(authenticate.verifyUser,upload.single('imageFile'),(req, res, next) => {
+.put(authenticate.verifyUser,(req, res, next) => {
     Post.findById(req.params.postId)
         .then((post,err) => {
             if(err) {
@@ -114,27 +118,28 @@ postsRouter.route('/:postId')
                         post.title = req.body.title;
                     if(req.body.description)
                         post.description = req.body.description; 
-                    if(req.file){
-                        let ext = req.file.mimetype.split("/")[1];
+                    if(req.image){
+                        let ext = req.image.mimetype.split("/")[1];
                         let name = `${post._id}.${ext}`
                         let newDest = `images/${req.user._id}/posts`;
-                        let oldPath = `tmp/uploads/${req.file.filename}`;
                         let newPath = `${newDest}/${name}`;
                         let imageData = {
                             fieldname: "imageFile",
                             originalname: name,
-                            mimetype: req.file.mimetype,
+                            mimetype: req.image.mimetype,
                             destination: `public/${newDest}`,
-                            Path: `public/${newPath}`
+                            Path: `public/${newPath}`,
+                            idOnDrive: req.image.id,
                         }
-                        
+                        /*
                         if(!(fs.existsSync(`public/${newDest}`)))
                             fs.mkdirSync(`public/${newDest}`, { recursive: true });
 
                         post.image = newPath;
 
                         fs.renameSync(oldPath,`public/${newPath}`);
-                        
+                        */
+                        post.image = newPath;
                         driveAPI.updateImage(imageData);
                     }
 
