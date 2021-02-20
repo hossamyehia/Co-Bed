@@ -92,6 +92,7 @@ usersRouter.post('/signup', (req, res, next) => {
 });
 
 usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
+  console.log(req.image);
   User.findById(req.user._id) 
       .then((user, err) => {
         if(err) {
@@ -127,6 +128,7 @@ usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
             user.coronaAvailableBeds = req.body.coronaAvailableBeds;
           }
           if(req.image){
+            
             let ext = req.image.mimetype.split("/")[1];
             let newDest = `images/${user._id}`;
             let name = `cover.${ext}`
@@ -153,6 +155,7 @@ usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
             */
 
             user.image = newPath;
+            
             driveAPI.updateImage(imageData); 
           }
 
