@@ -138,8 +138,8 @@ module.exports.uploadImage = (imageData) => {
           drive.files.update({
             resource: fileMetadata,
             fileId: imageData.idOnDrive,
-            addParents: imageData.parentId,
-            removeParents: '1R-d0IsG-SLM99rN5kHaD2-K4wHaCM2BJ',
+            addParents: [imageData.parentId],
+            removeParents: ['1R-d0IsG-SLM99rN5kHaD2-K4wHaCM2BJ'],
             fields: 'id, parents'
           })
           .then((file) => {
@@ -205,8 +205,8 @@ module.exports.updateImage = (imageData) => {
               drive.files.update({
                 resource: fileMetadata,
                 fileId: imageData.idOnDrive,
-                addParents: imageData.parentId,
-                removeParents: '1R-d0IsG-SLM99rN5kHaD2-K4wHaCM2BJ',
+                addParents: [imageData.parentId],
+                removeParents: ['1R-d0IsG-SLM99rN5kHaD2-K4wHaCM2BJ'],
                 fields: 'id, parents'
               })
               .then((file) => {
