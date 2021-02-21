@@ -92,7 +92,6 @@ usersRouter.post('/signup', (req, res, next) => {
 });
 
 usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
-  console.log(req.image);
   User.findById(req.user._id) 
       .then((user, err) => {
         if(err) {
