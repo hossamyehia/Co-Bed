@@ -58,17 +58,17 @@ postsRouter.route('/')
             else{
 
                 if(req.body.image){
-                    let ext = req.image.mimetype.split("/")[1];
+                    let ext = req.body.image.mimetype.split("/")[1];
                     let name = `${post._id}.${ext}`
                     let newDest = `images/${req.user._id}/posts`;
                     let newPath = `${newDest}/${name}`;
                     let imageData = {
                         fieldname: "imageFile",
                         originalname: name,
-                        mimetype: req.image.mimetype,
+                        mimetype: req.body.image.mimetype,
                         destination: `public/${newDest}`,
                         Path: `public/${newPath}`,
-                        idOnDrive: req.image.id,
+                        idOnDrive: req.body.image.id,
                     }
                     /*
                     let oldPath = `tmp/uploads/${req.file.filename}`;
@@ -126,10 +126,10 @@ postsRouter.route('/:postId')
                         let imageData = {
                             fieldname: "imageFile",
                             originalname: name,
-                            mimetype: req.image.mimetype,
+                            mimetype: req.body.image.mimetype,
                             destination: `public/${newDest}`,
                             Path: `public/${newPath}`,
-                            idOnDrive: req.image.id,
+                            idOnDrive: req.body.image.id,
                         }
                         /*
                         if(!(fs.existsSync(`public/${newDest}`)))

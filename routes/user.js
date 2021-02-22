@@ -135,7 +135,7 @@ usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
             let imageData = {
               fieldname: "imageFile",
               originalname: name,
-              mimetype: req.image.mimetype,
+              mimetype: req.body.image.mimetype,
               destination: `public/${newDest}`,
               Path: `public/${newPath}`,
               idOnDrive: req.image.id,
