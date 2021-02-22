@@ -36,7 +36,7 @@ const upload = multer({ storage: storage, fileFilter: imageFileFilter});
 const usersRouter = express.Router();
 
 usersRouter.use(bodyParser.json());
-usersRouter.use(bodyParser.urlencoded({ extended: true }));
+usersRouter.use(bodyParser.urlencoded({ extended: false }));
 
 
 usersRouter.post('/signup', (req, res, next) => {
@@ -126,7 +126,7 @@ usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
           if(req.body.coronaAvailableBeds){
             user.coronaAvailableBeds = req.body.coronaAvailableBeds;
           }
-          if(req.image){
+          if(req.body.image){
             
             let ext = req.image.mimetype.split("/")[1];
             let newDest = `images/${user._id}`;

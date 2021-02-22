@@ -34,7 +34,7 @@ const upload = multer({ storage: storage, fileFilter: imageFileFilter});
 const postsRouter = express.Router();
 
 postsRouter.use(bodyParser.json());
-postsRouter.use(bodyParser.urlencoded({ extended: true }));
+postsRouter.use(bodyParser.urlencoded({ extended: false }));
 
 postsRouter.route('/')
 .post(authenticate.verifyUser, (req, res, next) => {
@@ -57,7 +57,7 @@ postsRouter.route('/')
             }
             else{
 
-                if(req.image){
+                if(req.body.image){
                     let ext = req.image.mimetype.split("/")[1];
                     let name = `${post._id}.${ext}`
                     let newDest = `images/${req.user._id}/posts`;
@@ -118,7 +118,7 @@ postsRouter.route('/:postId')
                         post.title = req.body.title;
                     if(req.body.description)
                         post.description = req.body.description; 
-                    if(req.image){
+                    if(req.body.image){
                         let ext = req.image.mimetype.split("/")[1];
                         let name = `${post._id}.${ext}`
                         let newDest = `images/${req.user._id}/posts`;
