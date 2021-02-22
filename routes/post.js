@@ -119,7 +119,7 @@ postsRouter.route('/:postId')
                     if(req.body.description)
                         post.description = req.body.description; 
                     if(req.body.image){
-                        let ext = req.image.mimetype.split("/")[1];
+                        let ext = req.body.image.mimetype.split("/")[1];
                         let name = `${post._id}.${ext}`
                         let newDest = `images/${req.user._id}/posts`;
                         let newPath = `${newDest}/${name}`;

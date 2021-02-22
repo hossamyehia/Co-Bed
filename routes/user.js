@@ -128,7 +128,7 @@ usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
           }
           if(req.body.image){
             
-            let ext = req.image.mimetype.split("/")[1];
+            let ext = req.body.image.mimetype.split("/")[1];
             let newDest = `images/${user._id}`;
             let name = `cover.${ext}`
             let newPath = `${newDest}/${name}`;
