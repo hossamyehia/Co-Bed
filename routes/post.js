@@ -70,10 +70,12 @@ postsRouter.route('/')
                         Path: `public/${newPath}`,
                         idOnDrive: req.body.image.id,
                     }
-                    /*
-                    let oldPath = `tmp/uploads/${req.file.filename}`;
+
                     if(!(fs.existsSync(`public/${newDest}`)))
                         fs.mkdirSync(`public/${newDest}`, { recursive: true });
+
+                    /*
+                    let oldPath = `tmp/uploads/${req.file.filename}`;
                     
                     post.image = newPath;
                     fs.renameSync(oldPath,`public/${newPath}`);
@@ -131,15 +133,20 @@ postsRouter.route('/:postId')
                             Path: `public/${newPath}`,
                             idOnDrive: req.body.image.id,
                         }
-                        /*
+                        
                         if(!(fs.existsSync(`public/${newDest}`)))
                             fs.mkdirSync(`public/${newDest}`, { recursive: true });
 
+                        if(post.image != ""){
+                            if(!(fs.existsSync(`public/${post.image}`)))
+                                fs.rmSync(`public/${post.image}`, { recursive: true });
+                        }
                         post.image = newPath;
 
+                        /*
                         fs.renameSync(oldPath,`public/${newPath}`);
                         */
-                        post.image = newPath;
+                        
                         driveAPI.updateImage(imageData);
                     }
 

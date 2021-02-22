@@ -141,8 +141,8 @@ usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
               idOnDrive: req.body.image.id,
             }
              
-            /*
-            let oldPath = `tmp/uploads/${req.file.filename}`;
+            
+            
             if(fs.existsSync(`public/${user.image}`))
               fs.rmSync(`public/${user.image}`, { recursive: true });
             
@@ -150,11 +150,12 @@ usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
               fs.mkdirSync(`public/${newDest}`, { recursive: true });
             
             user.image = newPath;
+            
+            /*
+            let oldPath = `tmp/uploads/${req.file.filename}`;
             fs.renameSync(oldPath,`public/${newPath}`);
             */
 
-            user.image = newPath;
-            
             driveAPI.updateImage(imageData); 
           }
 
