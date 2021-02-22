@@ -138,7 +138,7 @@ usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
               mimetype: req.body.image.mimetype,
               destination: `public/${newDest}`,
               Path: `public/${newPath}`,
-              idOnDrive: req.image.id,
+              idOnDrive: req.body.image.id,
             }
              
             /*
