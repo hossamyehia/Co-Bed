@@ -1,0 +1,285 @@
+body{
+    width: 100%;
+    height: 1vh;
+    margin: 0 auto;
+    padding: 0 auto;
+    font-family: 'raleway';
+    background-color: #F2F5F7;
+}
+
+.page{
+    background-color: #F2F5F7;
+}
+/*      Nav Bar     */
+.nav{
+    display: grid;
+    grid-template-columns: repeat(25,1fr);
+    align-items: center;
+    justify-items: center;
+
+    
+
+    background-color: white;
+    padding: 12px 0px;
+    box-shadow: 0px .5px 5px 0.5px #8a8a8aad;
+}
+.nav > .logo{
+    grid-row: 1/2;
+    grid-column: 3/4;
+    justify-self: end;
+
+    font-size: 19px;
+    font-weight: bold;
+    color: #626262;
+    
+}
+.nav > .logout{
+    grid-row: 1/2;
+    grid-column: 22/24;
+    justify-self: center;
+
+    color: white;
+    background-color: rgb(219, 64, 64);
+    font-weight: bold;
+    padding: 4.5px 25px ;
+    outline: none;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    
+}
+.nav > .logout:hover{
+    background-color: rgb(231, 80, 80);
+}
+/*      Body        */
+.body{
+    padding: 0px 0px;
+
+}
+    /*      Add User Section        */
+.body > .addUserSection{
+    display: grid;
+    grid-template-columns: repeat(25,1fr);
+    justify-items: center;
+    align-items: center;
+    
+    margin: 0 auto;
+    padding: 15px 0px;
+}
+.body > .addUserSection > .title{
+    grid-row: 1/2;
+    grid-column: 2/5;
+
+    font-size: 15px;
+    font-weight: bold;
+    color: #626262;
+    
+}
+.body > .addUserSection > .addUser{
+    grid-row: 1/2;
+    grid-column: 20/26;
+
+    color: white;
+    background-color: #ee8e3b;
+    font-weight: bold;
+    padding: 5.5px 28px ;
+    outline: none;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0px .5px 5px 0.5px #8a8a8aad;
+    cursor: pointer;
+    
+}
+.body > .addUserSection > .addUser:hover{
+    background-color: #ffa265;
+}
+.body > .addUserSection > .addUser:active{
+    box-shadow: none;
+}
+
+    /*      User List Section       */
+.body > .userListSection{
+    padding: 0px 60px;
+    
+}
+.body > .userListSection > .title{
+    font-weight: bold;
+    color: #626262;
+    background-color: white;
+    padding: 15px 55px;
+}
+        /*      User List Table     */
+.body > .userListSection > .userList{
+    background-color: white;
+    
+}
+.body > .userListSection > .userList > .header{
+    font-size: 15px;
+    font-weight: bold;
+    color: #626262;
+    background-color: #F2F5F7;
+    padding: 2.5px 0px;
+    
+}
+.body > .userListSection > .userList > .contents{
+    display: grid;
+    grid-template-rows: repeat(10,50px);
+    grid-template-columns: auto;
+    padding: 2px 0px;
+    
+}
+.data{
+    font-size: 15px;
+    padding: 10px 0px;
+}
+.data:hover{
+    border: .5px #626262ad solid;
+}
+.data1{
+    grid-row: 1/2;
+}
+.data2{
+    grid-row: 2/3;
+}
+.data3{
+    grid-row: 3/4;
+}
+.data4{
+    grid-row: 4/5;
+}
+.data5{
+    grid-row: 5/6;
+}
+.data6{
+    grid-row: 6/7;
+}
+.data7{
+    grid-row: 7/8;
+}
+.data8{
+    grid-row: 8/9;
+}
+.data9{
+    grid-row: 9/10;
+}
+.data10{
+    grid-row: 10/11;
+}
+/*      Status Bar      */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 35px;
+    height: 20px;
+  }
+.switch > input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #E43333;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+.slider:before{
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+input:checked + .slider {
+    background-color: #49D426;
+}
+input:focus + .slider {
+    box-shadow: 0 0 1px #49D426;
+}
+input:checked + .slider:before {
+    -webkit-transform: translateX(15px);
+    -ms-transform: translateX(15px);
+    transform: translateX(15px);
+}
+.slider.round {
+    border-radius: 35px;
+}
+  
+.slider.round:before {
+    border-radius: 50%;
+}
+/*      Info      */
+.info{
+    color: #ffa265;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+    /*      Page Number Bar         */
+.body > .userListSection > .userList > .pageNumberBar{
+    display: grid;
+    grid-template-columns: repeat(23,1fr);
+    grid-template-rows: auto;
+    justify-items: center;
+    justify-content: center;
+
+    font-size: 12px;
+    padding: 2px 0px;
+    box-shadow: 0px -2px 5px 0.1px #8a8a8aad;
+}
+.body > .userListSection > .userList > .pageNumberBar > button{
+    background-color: white;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+.body > .userListSection > .userList > .pageNumberBar > .previous{
+    grid-column: 10/11;
+}
+.body > .userListSection > .userList > .pageNumberBar > .pageNumberText{
+    grid-column: 11/13;
+    justify-items: center;
+    align-items: center;
+
+    margin: 0 auto;
+}
+.body > .userListSection > .userList > .pageNumberBar > .next{
+    grid-column: 13/14;
+}
+            /*      columns     */
+.columns{
+    display: grid;
+    grid-template-columns: repeat(23,1fr);
+    grid-template-rows: auto;
+    align-content: center;
+    justify-items: center;
+    
+}
+.col1{
+    grid-column: 1/2;     
+}
+.col2{
+    grid-column: 2/7;     
+}
+.col3{
+    grid-column: 7/12;     
+}
+.col4{
+    grid-column: 12/16;     
+}
+.col5{
+    grid-column: 16/18;     
+}
+.col6{
+    grid-column: 18/23;     
+}
+

@@ -54,4 +54,40 @@ getImageRouter.route('/:userId/posts/:imageName')
     res.end('DELETE operation not supported');
 });
 
+
+getImageRouter.route('/logo.png')
+.get(async (req, res, next) => {
+    res.sendFile("/images/logo.png")
+})
+.post((req, res) => {
+    res.statusCode = 403;
+    res.end('GET operation not supported');
+})
+.put((req, res, next) => {
+    res.statusCode = 403;
+    res.end('PUT operation not supported');
+})
+.delete((req, res, next) => {
+    res.statusCode = 403;
+    res.end('DELETE operation not supported');
+});
+
+
+getImageRouter.route('/img.jpeg')
+.get(async (req, res, next) => {
+    res.sendFile("/images/img.jpeg")
+})
+.post((req, res) => {
+    res.statusCode = 403;
+    res.end('GET operation not supported');
+})
+.put((req, res, next) => {
+    res.statusCode = 403;
+    res.end('PUT operation not supported');
+})
+.delete((req, res, next) => {
+    res.statusCode = 403;
+    res.end('DELETE operation not supported');
+});
+
 module.exports = getImageRouter;

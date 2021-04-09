@@ -10,7 +10,9 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 
-
+const indexRouter = require("./routes/index");
+const adminRouter = require("./routes/admin");
+const styleRouter = require("./routes/style");
 const usersRouter = require("./routes/user");
 const postsRouter = require("./routes/post");
 const searchRouter = require("./routes/search");
@@ -30,8 +32,14 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
+app.use("/stylesheet",express.static(__dirname + '/public/stylesheet'));
+app.use("/admin",express.static(__dirname + '/public/admin'));
+app.use("/scripts",express.static(__dirname + '/public/scripts'));
 
+app.use('/', indexRouter);
+app.use('/admin', adminRouter);
+app.use('/stylesheet', styleRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/search', searchRouter);

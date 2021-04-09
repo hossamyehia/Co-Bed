@@ -1,0 +1,96 @@
+body{
+    width: 100%;
+    height: 1vh;
+    margin: 0 auto;
+    padding: 0 auto;
+    font-family: 'raleway';
+}
+.page{
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(11,1fr);
+    grid-template-rows: repeat(9,70px);
+    grid-gap: 10px;
+}
+/*      Header      */
+.header{
+    align-self: center;
+    margin: 30px 0px;
+    grid-row: 2/5;
+    grid-column: 2 / 8;
+}
+.header > img {
+    padding: 40px 0;
+    max-width: 250px;
+    max-height: 125px;
+}
+.header > header {
+    padding: 5px 0px;
+    font-size: 50px;
+    font-weight: bold;
+    
+}
+.header > header > span{
+    color: #EE8E3B;
+    
+}
+
+/*      Form        */
+.form{
+    align-self: center;
+    grid-row: 5/9;
+    grid-column: 2 / 8;
+}
+.form > form > label{
+    color: #626262;
+    font-weight: 550;
+    display: block;
+    padding: 5px 0px;
+}
+.form > form > input{
+    display: block;
+    color: #8a8a8a;
+    margin: 5px 0px 10px 0px;
+    width: 360px;
+    padding: 10px 0px 10px 7px;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 1px 2.5px 7px 1px #8a8a8aad;
+}
+.form > form > input::placeholder{
+    color: #8a8a8a;
+    opacity: 0.5;
+}
+.form > form > button{
+    display: block;
+    color: white;
+    font-size: 17px;
+    background-color: #EE8E3B;
+    padding: 12px 160px;
+    margin: 30px 0px;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 1px 2.5px 7px 1px #696969ad;
+    cursor: pointer;
+}
+.form > form > button:hover{
+    color: white;
+    background-color: #eb9e5c;
+    box-shadow: 1px 2.5px 7px 1px #696969ad;
+}
+.form > form > button:active{
+    box-shadow: none;
+}
+/*      Side Image      */
+.sideImage{   
+    grid-row: 1/9;
+    grid-column: 8 / 11;
+}
+
+.sideImage > img{
+    max-width: 550px;
+    height: 100vh;
+    
+}
