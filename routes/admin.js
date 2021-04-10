@@ -19,12 +19,11 @@ adminRouter.use(bodyParser.urlencoded({ extended: false }));
 
 adminRouter.route('/login')
 .get((req, res, next) => {
-    console.log(appDirName)
     res.sendFile(appDirName + "/public/pages/login.html")
 })
-.post(passport.authenticate('local'),(req, res) => {
-    
-})
+.post(passport.authenticate('admin-local',{ successRedirect: '/admin/panel',
+                                            failureRedirect: '/admin/login' }) 
+)                        
 .put((req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported');
@@ -37,7 +36,7 @@ adminRouter.route('/login')
 
 
 adminRouter.route('/panel')
-.get(adminAuth.verifyAdmin,(req, res, next) => {
+.get(/*adminAuth.verifyAdmin,*/(req, res, next) => {
     res.sendFile(appDirName + "/public/pages/panel.html")
 })
 .post((req, res) => {

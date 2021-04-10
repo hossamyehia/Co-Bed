@@ -16,7 +16,84 @@
         <div class="body">
             <section class="addUserSection">
                 <header class="title">Manage users</header>
-                <button class="addUser" type="button">Add User</button> 
+                <div id="newUser" class="newUser">
+                    <button onclick="Show()" class="addUser" type="button">Add User</button>
+                    <div id="newInfo" class="newInfo">
+                        <form class="newUserForm" action="/users/signup" method="POST">
+                            <div>
+                                <label for="userName">Username</label>
+                                <input type="text" name="username" placeholder="Enter username">
+                            </div>
+                            <div>
+                                <label for="password">Password</label>
+                                <input type="password" name="password" placeholder="Enter password">
+                            </div>
+                            <div>
+                                <label for="name">Name</label>
+                                <input type="text" name="name" placeholder="Enter organization`s name">
+                            </div>
+                            <div>
+                                <label for="phoneNumber">Phone Number</label>
+                                <input type="text" name="phoneNumber" placeholder="Enter organization`s phone number">
+                            </div>
+                            <div>
+                                <label for="city">Governiment</label>
+                                <input list="cities" name="city" id="city">
+                                <datalist id="cities">
+                                    <option value="Cairo">
+                                    <option value="Giza">
+                                    <option value="Qalyubia">
+                                    <option value="Helwan">
+                                    <option value="6th of Octobar">
+                                    <option value="Beheira">
+                                    <option value="Marsa Matruh">
+                                    <option value="Dakahlia">
+                                    <option value="Kafr El Sheikh">
+                                    <option value="Gharbia">
+                                    <option value="Monufia">
+                                    <option value="Damietta">
+                                    <option value="Port Said">
+                                    <option value="Ismailia">
+                                    <option value="Suez">
+                                    <option value="Sharqia">
+                                    <option value="North of Sinai">
+                                    <option value="South of Sinai">
+                                    <option value="Fayoum">
+                                    <option value="Beni Suef">
+                                    <option value="Minya">
+                                    <option value="Asyut">
+                                    <option value="New Valley">
+                                    <option value="Sohag">
+                                    <option value="Qena">
+                                    <option value="Luxor">
+                                    <option value="Aswan">
+                                    <option value="Red Sea">
+                                </datalist>
+                            </div>
+                            <div>
+                                <label for="totalBeds">Total Beds</label>
+                                <input type="text" name="totalBeds" placeholder="Enter organization`s total number of beds">
+                            </div>
+                            <div>
+                                <label for="coronaBeds">Corona Beds</label>
+                                <input type="text" name="coronaBeds" placeholder="Enter organization`s number of corona beds">
+                            </div>
+                            <div>
+                                <label for="totalAvailableBeds">Total Available Beds</label>
+                                <input type="text" name="totalAvailableBeds" placeholder="Enter organization`s total number of available beds">
+                            </div>
+                            <div>
+                                <label for="coronaAvailableBeds">Corona Available Beds</label>
+                                <input type="text" name="coronaAvailableBeds" placeholder="Enter organization`s number of available corona beds">
+                            </div>
+                            <div>
+                                <button type="submit">Add User</button>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+                 
             </section>
             <section class="userListSection">
                 <header class="title">Users List</header>
@@ -28,144 +105,80 @@
                         <div class="col4">Status</div>
                     </div>
                     <div class="contents">
-                        <div class="columns data data1">
-                            <div class="col1">No</div>
-                            <div class="col2">username</div>
-                            <div class="col3">Phone Number</div>
-                            <div class="col4">Status</div>
+                        <div id="data1" class="columns data data1">
+                            <div class="col1">1</div>
+                            <div class="col2">elzahraa</div>
+                            <div class="col3">01004005623</div>
+                            <div class="col4">Unaccepted</div>
                             <div class="col5">
                                 <label class="switch">
-                                    <input type="checkbox" class="status">
+                                    <input onclick="toggleCheckbox(this)" type="checkbox" class="status">
                                     <span class="slider round"></span>
                                   </label>
                             </div>
-                            <div class="info col6">View all info</div>
+                            <div class="col6">
+                                <button class="title">View all info</button>
+                                <div class="info">
+
+                                </div> 
+                            </div>
                         </div>
 
-                        <div class="columns data data2">
-                            <div class="col1">No</div>
-                            <div class="col2">username</div>
-                            <div class="col3">Phone Number</div>
-                            <div class="col4">Status</div>
+                        <div id="data2" class="columns data data2">
+                            <div class="col1">2</div>
+                            <div class="col2">elnada</div>
+                            <div class="col3">01067237523</div>
+                            <div class="col4">Unaccepted</div>
                             <div class="col5">
                                 <label class="switch">
-                                    <input type="checkbox" class="status">
+                                    <input onclick="toggleCheckbox(this)" type="checkbox" class="status">
                                     <span class="slider round"></span>
                                   </label>
                             </div>
-                            <div class="info col6">View all info</div>
+                            <div class="col6">
+                                <button class="title">View all info</button>
+                                <div class="info">
+
+                                </div> 
+                            </div>
                         </div>
 
-                        <div class="columns data data3">
-                            <div class="col1">No</div>
-                            <div class="col2">username</div>
-                            <div class="col3">Phone Number</div>
-                            <div class="col4">Status</div>
+                        <div id="data3" class="columns data data3">
+                            <div class="col1">3</div>
+                            <div class="col2">newhospital</div>
+                            <div class="col3">01005953041</div>
+                            <div class="col4">Unaccepted</div>
                             <div class="col5">
                                 <label class="switch">
-                                    <input type="checkbox" class="status">
+                                    <input onclick="toggleCheckbox(this)" type="checkbox" class="status">
                                     <span class="slider round"></span>
                                   </label>
                             </div>
-                            <div class="info col6">View all info</div>
+                            <div class="col6">
+                                <button class="title">View all info</button>
+                                <div class="info">
+                                    
+                                </div> 
+                            </div>
                         </div>
 
-                        <div class="columns data data4">
-                            <div class="col1">No</div>
-                            <div class="col2">username</div>
-                            <div class="col3">Phone Number</div>
-                            <div class="col4">Status</div>
+                        <div id="data4" class="columns data data4">
+                            <div class="col1">4</div>
+                            <div class="col2">newhospital2</div>
+                            <div class="col3">01069233516</div>
+                            <div class="col4">Unaccepted</div>
                             <div class="col5">
                                 <label class="switch">
-                                    <input type="checkbox" class="status">
+                                    <input onclick="toggleCheckbox(this)" type="checkbox" class="status">
                                     <span class="slider round"></span>
                                   </label>
                             </div>
-                            <div class="info col6">View all info</div>
-                        </div>
+                            <div class="col6">
+                                <button class="title">View all info</button>
+                                <div class="info">
 
-                        <div class="columns data data5">
-                            <div class="col1">No</div>
-                            <div class="col2">username</div>
-                            <div class="col3">Phone Number</div>
-                            <div class="col4">Status</div>
-                            <div class="col5">
-                                <label class="switch">
-                                    <input type="checkbox" class="status">
-                                    <span class="slider round"></span>
-                                </label>
+                                </div> 
                             </div>
-                            <div class="info col6">View all info</div>
-                        </div>
-
-                        <div class="columns data data6">
-                            <div class="col1">No</div>
-                            <div class="col2">username</div>
-                            <div class="col3">Phone Number</div>
-                            <div class="col4">Status</div>
-                            <div class="col5">
-                                <label class="switch">
-                                    <input type="checkbox" class="status">
-                                    <span class="slider round"></span>
-                                  </label>
-                            </div>
-                            <div class="info col6">View all info</div>
-                        </div>
-
-                        <div class="columns data data7">
-                            <div class="col1">No</div>
-                            <div class="col2">username</div>
-                            <div class="col3">Phone Number</div>
-                            <div class="col4">Status</div>
-                            <div class="col5">
-                                <label class="switch">
-                                    <input type="checkbox" class="status">
-                                    <span class="slider round"></span>
-                                  </label>
-                            </div>
-                            <div class="info col6">View all info</div>
-                        </div>
-
-                        <div class="columns data data8">
-                            <div class="col1">No</div>
-                            <div class="col2">username</div>
-                            <div class="col3">Phone Number</div>
-                            <div class="col4">Status</div>
-                            <div class="col5">
-                                <label class="switch">
-                                    <input type="checkbox" class="status">
-                                    <span class="slider round"></span>
-                                  </label>
-                            </div>
-                            <div class="info col6">View all info</div>
-                        </div>
-
-                        <div class="columns data data9">
-                            <div class="col1">No</div>
-                            <div class="col2">username</div>
-                            <div class="col3">Phone Number</div>
-                            <div class="col4">Status</div>
-                            <div class="col5">
-                                <label class="switch">
-                                    <input type="checkbox" class="status">
-                                    <span class="slider round"></span>
-                                  </label>
-                            </div>
-                            <div class="info col6">View all info</div>
-                        </div>
-
-                        <div class="columns data data10">
-                            <div class="col1">No</div>
-                            <div class="col2">username</div>
-                            <div class="col3">Phone Number</div>
-                            <div class="col4">Status</div>
-                            <div class="col5">
-                                <label class="switch">
-                                    <input type="checkbox" class="status">
-                                    <span class="slider round"></span>
-                                  </label>
-                            </div>
-                            <div class="info col6">View all info</div>
                         </div>
 
 
@@ -183,4 +196,33 @@
     </div>
     
 </body>
+<script>
+    
+    let toggleCheckbox = (caller) => {
+        let parentId = caller.parentNode.parentNode.parentNode.getAttribute("id");
+        let text = document.getElementById(parentId).getElementsByClassName("col4");
+        if (caller.checked) {
+            text[0].innerText = "Accepted";
+
+        } else {
+            text[0].innerText = "Unaccepted";
+        }
+    }
+    
+    function Show() {
+        document.getElementById("newInfo").classList.toggle("show");
+    }
+    window.onclick = function(event) {
+        if (!(document.getElementById("newInfo").contains(event.target) || event.target.matches('.addUser'))) {
+            let dropdowns = document.getElementsByClassName("newInfo");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+            }
+        }
+    }
+</script>
 </html>

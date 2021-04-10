@@ -178,19 +178,31 @@ usersRouter.put('/update',authenticate.verifyUser, (req, res, next) => {
 
   
 usersRouter.post('/login', passport.authenticate('local'), (req, res) => {
-  User.aggregate([{ $match: { _id: req.user._id } },{ $project: { accepted: 0, username: 0, salt: 0,hash: 0,__v: 0 } }]) 
-      .then((user, err) => {
-        if(err) {
-          res.statusCode = 404;
-          res.setHeader('Content-Type', 'application/json');
-          res.json({err: err});
+  User.aggregate([{ $match: { _id: req.user._id } },{ $project: { username: 0, salt: 0,hash: 0,__v: 0 } }]) 
+      .then((user) => {
+        if(user) {
+          if(user.accepted) {
+            let token = authenticate.getToken({_id: req.user._id});
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: true, token: token, user: user, status: 'You are successfully logged in!'});
+          }
+          else {
+            res.statusCode = 401;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: false,message: "Your account has not accepted yet"});
+          }
         }
         else {
-          let token = authenticate.getToken({_id: req.user._id});
-          res.statusCode = 200;
+          res.statusCode = 404;
           res.setHeader('Content-Type', 'application/json');
-          res.json({success: true, token: token, user: user, status: 'You are successfully logged in!'}); 
+          res.json({success: false,status: "Not Found"});
         }
+      })
+      .catch(err => {
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({err: err});
       });
 });
 

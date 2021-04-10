@@ -33,9 +33,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(express.static(__dirname + '/public'));
-app.use("/stylesheet",express.static(__dirname + '/public/stylesheet'));
-app.use("/admin",express.static(__dirname + '/public/admin'));
-app.use("/scripts",express.static(__dirname + '/public/scripts'));
+
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);

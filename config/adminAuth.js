@@ -20,20 +20,23 @@ let opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = config.secretKey;
 
-exports.jwtPassport = passport.use(new LocalStrategy(
-    function(username, password, done) {
-      Admin.findOne({ username: username }, function(err, user) {
-        if (err) { return done(err); }
-        if (!user) {
-          return done(null, false, { message: 'Incorrect username.' });
-        }
-        if (!user.validPassword(password)) {
-          return done(null, false, { message: 'Incorrect password.' });
-        }
-        return done(null, user);
-      });
+exports.jwtPassport = passport.use('admin-local' ,new LocalStrategy({
+  usernameField: 'username',
+  passwordField: 'password'
+},
+function(username, password, done) {
+  Admin.findOne({ username: username }, function(err, user) {
+    if (err) { return done(err); }
+    if (!user) {
+      return done(null, false, { message: 'Incorrect username.' });
     }
-  ));
+    if (!user.authenticate(password)) {
+      return done(null, false, { message: 'Incorrect password.' });
+    }
+    return done(null, user);
+  });
+}
+));
 
 
 
